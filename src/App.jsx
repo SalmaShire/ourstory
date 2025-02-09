@@ -11,7 +11,6 @@ function AppContent() {
 
   return (
     <div className="app-layout">
-      {/* only show LeftFeed if NOT on Community page */}
       {location.pathname !== "/community" && <LeftFeed />}  
 
       <div className="right-section">
