@@ -1,0 +1,37 @@
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.left-feed {
+  flex: 0 0 25%;
+  max-width: 400px;
+  background-color: #987B73;
+  color: white;
+  margin-right: 0px;
+  height: 100vh;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
+
+.right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  background-color: #987B73;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.map-container {
+  flex: 1;
+  width: 100%;
+}

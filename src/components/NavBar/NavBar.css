@@ -1,0 +1,32 @@
+.navbar {
+  background-color: #987B73;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: white;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-item:hover {
+  color: #d3c6c0;
+}
+
+.nav-item.selected {
+  color: #d3c6c0;
+  border-bottom: 4px solid #d3c6c0;
+}
+
+.nav-icon {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
