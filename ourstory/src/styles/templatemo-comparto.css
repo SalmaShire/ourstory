@@ -1,0 +1,108 @@
+/* Header */
+.tm-header {
+  background-color: #DDCBB7; /* Background color */
+  padding: 20px 10px;
+  display: flex;
+  justify-content: flex-start; /* Align everything to the left */
+  align-items: center;
+  border-bottom: 3px solid #666;
+  height: 45px;
+  padding-left: 20px; /* Ensures spacing on the left */
+}
+
+/* Header Inner Container */
+.tm-header-inner {
+  display: flex;
+  justify-content: space-between; /* Site name left, nav right */
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Site Name Container */
+.tm-site-name-container {
+  margin-right: auto; /* Pushes nav to the right */
+  text-align: left;
+}
+
+/* Site Name Text */
+.tm-site-name {
+  font-size: 28px; /* Larger font */
+  color: #264025; /* Text color */
+  font-weight: bold;
+  margin: 0;
+  text-align: left; /* Forces text alignment left */
+}
+
+/* Navigation Container */
+.tm-nav-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Pushes navigation to the right */
+}
+
+/* Navigation */
+.tm-nav {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+/* Navigation Items */
+.tm-nav-item {
+  margin-right: 20px; /* Space between nav items */
+  padding: 10px 20px;
+  background-color: #3e0100; /* Background color */
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Navigation Links */
+.tm-nav-link {
+  color: white;
+  font-size: 1.2rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center; /* Center text */
+  justify-content: center;
+  height: 100%;
+}
+
+/* Navigation Hover Effect */
+.tm-nav-item:hover {
+  background-color: #CC9999; /* Soft pink hover effect */
+}
+
+/* Active Page Highlight */
+.tm-nav-item .tm-nav-link.active {
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tm-header {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .tm-header-inner {
+    flex-direction: column; /* Stack site name and nav vertically */
+    align-items: center;
+  }
+
+  .tm-site-name {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .tm-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tm-nav-item {
+    margin: 5px;
+    padding: 8px 15px;
+  }
+}

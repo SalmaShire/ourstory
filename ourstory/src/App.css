@@ -24,3 +24,45 @@ body {
 .nav-bar a:hover {
   text-decoration: underline;
 }
+/* Reset styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+/* App container */
+.app-container {
+  text-align: center;
+}
+
+/* Navigation Bar */
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  background: #0073e6;
+  padding: 15px;
+}
+
+/* Navigation Links */
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 20px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+/* Active link styling */
+.nav-link.active {
+  background: white;
+  color: #0073e6;
+}
+
+/* Hover effect */
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
