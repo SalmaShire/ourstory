@@ -13,13 +13,13 @@ Cities are more than just roads and buildings; they are built on **connections, 
 
 ---
 
-## ** Features**  
+## **Features**  
 
 ### **Interactive Map**  
 Explore historical landmarks and learn about their significance.  
 Find local events happening in different neighborhoods.  
 
-### 💬 **Community Feed**  
+###  **Community Feed**  
 Residents can share personal stories, old photos, and historical insights tied to specific locations.  
 Users can engage with posts through **likes and comments**, fostering discussion and connection.  
 
@@ -29,7 +29,7 @@ Promote grassroots initiatives and bring neighbors together through shared activ
 
 ---
 
-## ** Tech Stack**  
+## **Tech Stack**  
 
 | **Technology** | **Usage** |
 |---------------|----------|
