@@ -1,83 +1,148 @@
-import React, { useState } from 'react';
-import './Community.css';
-import profilePic from '../../assets/blank-profile-picture-973460_1280.webp';
-import { FaRegHeart, FaRegCommentDots } from 'react-icons/fa';
-import { MdEventAvailable } from 'react-icons/md';
+import React, { useState, useEffect } from "react";
+import "./Community.css";
+import profilePic from "../../assets/blank-profile-picture-973460_1280.webp";
+import { FaRegHeart, FaRegCommentDots } from "react-icons/fa";
+import { MdEventAvailable } from "react-icons/md";
+
+const API_URL = "http://localhost:5050/posts";
 
 function Community() {
-  const [newPost, setNewPost] = useState('');
-  const [posts, setPosts] = useState([
-    { id: 1, username: 'Sophia Martinez', timestamp: '1h ago', content: 'The Twin Cities Jazz Festival was an incredible experience! The music, the vibe, everything was top-notch.', location: 'Downtown St. Paul, MN - 123 Jazz St.', rating: '⭐️⭐️⭐️⭐️⭐️', review: 'If you love jazz, this is the event for you. Come by next time and experience the magic!', likes: 14, comments: [] },
-    { id: 2, username: 'James Anderson', timestamp: '2h ago', content: 'The Winter Carnival at Rice Park was fantastic! The ice sculptures were breathtaking.', location: 'Rice Park, St. Paul, MN - 456 Snow Ave.', rating: '⭐️⭐️⭐️⭐️⭐️', review: 'Perfect for families and friends. Definitely a must-visit next winter!', likes: 23, comments: []},
-    { id: 3, username: 'Emily Johnson', timestamp: '3h ago', content: 'The Farmers Market in downtown St. Paul was full of fresh produce and amazing local vendors.', location: 'Market Square, St. Paul, MN - 789 Fresh Ln.', rating: '⭐️⭐️⭐️⭐️', review: 'A great spot for food lovers. Highly recommend visiting early for the best selection!', likes: 9, comments: [] },
-    { id: 4, username: 'Michael Lee', timestamp: 'Yesterday', content: 'Minnesota State Fair was a blast! Loved the deep-fried food and entertainment.', location: '126 Fairground Rd., St. Paul, MN', rating: '⭐️⭐️⭐️⭐️⭐️', review: 'This fair gets better every year. If you haven’t been, don’t miss out next time!', likes: 31, comments: [] },
-    { id: 5, username: 'Sarah Kim', timestamp: '2 days ago', content: 'Art in Bloom at the Minneapolis Institute of Art was stunning.', location: '2400 3rd Ave S, Minneapolis, MN', rating: '⭐️⭐️⭐️⭐️', review: 'The floral arrangements were breathtaking. Perfect for art lovers!', likes: 18, comments: [] },
-    { id: 6, username: 'Daniel Roberts', timestamp: 'Last week', content: 'The Timberwolves game was intense! The energy was unreal.', location: 'Target Center, Minneapolis, MN', rating: '⭐️⭐️⭐️⭐️', review: 'Great atmosphere, awesome game. Can’t wait for the next one!', likes: 27, comments: [] },
-    { id: 7, username: 'Jessica Lopez', timestamp: '3 days ago', content: 'UMN students looking for volunteer opportunities, check out local food banks!', location: 'Minneapolis Food Bank - 101 Community Dr.', rating: '⭐️⭐️⭐️⭐️⭐️', review: 'Volunteering here was an amazing experience. They need more hands, so stop by if you can!', likes: 15, comments: [] },
-    { id: 8, username: 'Ryan Thomas', timestamp: '4 days ago', content: 'Stumbled upon a great free food distribution event near UMN!', location: 'Hope Community Center - 202 Helping Hands Ave.', rating: '⭐️⭐️⭐️⭐️', review: 'They provide food for students in need. If you’re struggling, stop by and check it out!', likes: 20, comments: [] },
-    { id: 9, username: 'Olivia Green', timestamp: '5 days ago', content: 'Looking for weekend volunteering? The Twin Cities Food Bank is always welcoming students!', location: 'Twin Cities Food Bank - 303 Charity Ln.', rating: '⭐️⭐️⭐️⭐️⭐️', review: 'A great way to give back and meet fellow students. Highly recommend joining!', likes: 12, comments: [] },
-  ]);
-
+  const [newPost, setNewPost] = useState("");
+  const [newLocation, setNewLocation] = useState("");
+  const [newReview, setNewReview] = useState("");
+  const [newRating, setNewRating] = useState("");
+  const [posts, setPosts] = useState([]);
   const [commentInputs, setCommentInputs] = useState({});
   const [showCommentBox, setShowCommentBox] = useState({});
 
-  const handlePostSubmit = () => {
-    if (newPost.trim()) {
+  //here we fetch posts from MongoDB on load
+  useEffect(() => {
+    fetch(API_URL)
+      .then((res) => res.json())
+      .then((data) => setPosts(data))
+      .catch((err) => console.error("Error fetching posts:", err));
+  }, []);
+
+  //now we handle new post submission
+  const handlePostSubmit = async () => {
+    if (newPost.trim() && newLocation.trim() && newReview.trim() && newRating.trim()) {
       const newEntry = {
-        id: posts.length + 1,
-        username: 'Current User',
-        timestamp: 'Just now',
+        username: "Current User",
+        timestamp: new Date().toLocaleString(),
         content: newPost,
-        location: 'User Location',
-        rating: '⭐️⭐️⭐️⭐️',
-        review: 'Excited to share this with everyone!',
+        location: newLocation,
+        rating: newRating,
+        review: newReview,
         likes: 0,
-        comments: [],
         rsvps: 0,
+        comments: [],
       };
-      setPosts([newEntry, ...posts]);
-      setNewPost('');
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newEntry),
+        });
+
+        if (response.ok) {
+          const savedPost = await response.json();
+          setPosts((prevPosts) => [savedPost, ...prevPosts]); 
+          setNewPost("");
+          setNewLocation("");
+          setNewReview("");
+          setNewRating("");
+        } else {
+          console.error("Failed to save post to MongoDB");
+        }
+      } catch (error) {
+        console.error("Error posting:", error);
+      }
     }
   };
 
-  const handleLike = (postId) => {
-    setPosts(posts.map(post => 
-      post.id === postId ? { ...post, likes: post.likes + 1 } : post
-    ));
-  };
+  //here is where we handle likes, incrementing, etc
+  const handleLike = async (postId) => {
+    try {
+      const response = await fetch(`${API_URL}/${postId}/like`, {
+        method: "PUT",
+      });
+  
+      if (response.ok) {
+        const updatedPost = await response.json();
 
-  const handleRSVP = (postId) => {
-    setPosts(posts.map(post => 
-      post.id === postId ? { ...post, rsvps: (post.rsvps || 0) + 1 } : post
-    ));
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? { ...post, likes: updatedPost.likes, rsvps: post.rsvps }
+              : post
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
   };
+  
 
-  const handleCommentChange = (postId, text) => {
-    setCommentInputs((prev) => ({
-      ...prev,
-      [postId]: text,
-    }));
+  const handleRSVP = async (postId) => {
+    try {
+      const response = await fetch(`${API_URL}/${postId}/rsvp`, {
+        method: "PUT",
+      });
+  
+      if (response.ok) {
+        const updatedPost = await response.json();
+  
+        console.log("RSVP successful for post:", postId, "New RSVP count:", updatedPost.rsvps);
+  
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId ? { ...post, rsvps: updatedPost.rsvps || 1 } : post
+          )
+        );
+      } else {
+        console.error("Failed to RSVP:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error RSVPing:", error);
+    }
   };
+  
 
-  const handleCommentSubmit = (postId) => {
+  const handleCommentSubmit = async (postId) => {
     if (!commentInputs[postId]?.trim()) return;
-
-    setPosts(posts.map(post =>
-      post.id === postId
-        ? { ...post, comments: [...post.comments, { username: "Current User", text: commentInputs[postId] }] }
-        : post
-    ));
-
-    setCommentInputs((prev) => ({
-      ...prev,
-      [postId]: '',
-    }));
-
-    setShowCommentBox((prev) => ({
-      ...prev,
-      [postId]: false,
-    }));
+  
+    try {
+      const response = await fetch(`${API_URL}/${postId}/comment`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: "Current User", text: commentInputs[postId] }),
+      });
+  
+      if (response.ok) {
+        const updatedPost = await response.json();
+  
+        console.log("Comment added:", updatedPost.comments);
+  
+        //making sure new comments appear under post
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId ? { ...post, comments: updatedPost.comments } : post
+          )
+        );
+  
+        setCommentInputs((prev) => ({
+          ...prev,
+          [postId]: "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
   };
+  
+  
 
   return (
     <div className="community-page">
@@ -88,14 +153,24 @@ function Community() {
             className="new-post-input"
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            placeholder="What's on your mind?"
+            placeholder="How was the event?"
           />
+          <input className="new-post-input" value={newLocation} onChange={(e) => setNewLocation(e.target.value)} placeholder="Location (e.g., Minneapolis, MN)" />
+          <input className="new-post-input" value={newReview} onChange={(e) => setNewReview(e.target.value)} placeholder="Write a short review..." />
+          <select className="new-post-input" value={newRating} onChange={(e) => setNewRating(e.target.value)}>
+            <option value="">Select Rating</option>
+            <option value="⭐️">⭐️</option>
+            <option value="⭐️⭐️">⭐️⭐️</option>
+            <option value="⭐️⭐️⭐️">⭐️⭐️⭐️</option>
+            <option value="⭐️⭐️⭐️⭐️">⭐️⭐️⭐️⭐️</option>
+            <option value="⭐️⭐️⭐️⭐️⭐️">⭐️⭐️⭐️⭐️⭐️</option>
+          </select>
           <button className="new-post-button" onClick={handlePostSubmit}>Post</button>
         </div>
 
         <main className="posts-section">
           {posts.map((post) => (
-            <div key={post.id} className="post">
+            <div key={post._id} className="post">
               <div className="post-header">
                 <div className="post-user-info">
                   <img src={profilePic} alt="User Profile" className="post-profile-image" />
@@ -104,51 +179,54 @@ function Community() {
                 <span className="post-timestamp">{post.timestamp}</span>
               </div>
               <p className="post-content">{post.content}</p>
-              <div className="post-details">
-                <p><strong>Location:</strong> <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(post.location)}`} target="_blank" rel="noopener noreferrer" className="location-link">{post.location}</a></p>
-                <p className="rating"><strong>Rating:</strong> {post.rating}</p>
-                <p><strong>Review:</strong> {post.review}</p>
-              </div>
+              <p><strong>Location:</strong> <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(post.location)}`} target="_blank" rel="noopener noreferrer">{post.location}</a></p>
+              <p className="rating"><strong>Rating:</strong> {post.rating}</p>
+              <p><strong>Review:</strong> {post.review}</p>
 
               <div className="post-actions">
-                <button className="action-button" onClick={() => handleLike(post.id)}>
+                <button className="action-button" onClick={() => handleLike(post._id)}>
                   <FaRegHeart className="action-icon" /> {post.likes}
                 </button>
-                <button className="action-button" onClick={() => setShowCommentBox(prev => ({ ...prev, [post.id]: !prev[post.id] }))}>
+                <button className="action-button" onClick={() => setShowCommentBox((prev) => ({ ...prev, [post._id]: !prev[post._id] }))}>
                   <FaRegCommentDots className="action-icon" /> {post.comments.length}
                 </button>
-                <button className="action-button rsvp-button" onClick={() => handleRSVP(post.id)}>
-                  <MdEventAvailable className="action-icon" /> {post.rsvps}
+                <button className="action-button rsvp-button" onClick={() => handleRSVP(post._id)}>
+                  <MdEventAvailable className="action-icon" /> {post.rsvps || 0}
                 </button>
               </div>
 
-              {showCommentBox[post.id] && (
-                <div className="comment-box">
-                  <input
-                    type="text"
-                    placeholder="Add a comment..."
-                    value={commentInputs[post.id] || ''}
-                    onChange={(e) => handleCommentChange(post.id, e.target.value)}
-                    className="comment-input"
-                  />
-                  <button onClick={() => handleCommentSubmit(post.id)} className="comment-submit-button">Comment</button>
-                </div>
-              )}
+      {showCommentBox[post._id] && (
+        <div className="comment-box">
+          <input
+            type="text"
+            placeholder="Add a comment..."
+            value={commentInputs[post._id] || ""}
+            onChange={(e) => setCommentInputs((prev) => ({
+              ...prev,
+              [post._id]: e.target.value,
+            }))}
+            className="comment-input"
+          />
+          <button onClick={() => handleCommentSubmit(post._id)} className="comment-submit-button">
+            Comment
+          </button>
+        </div>
+      )}
 
-              <div className="comment-list">
-                {post.comments.map((comment, index) => (
-                  <div key={index} className="comment">
-                    <img src={profilePic} alt="User Profile" className="comment-profile-image" />
-                    <div className="comment-content">
-                      <span className="comment-username">{comment.username}</span>
-                      <p>{comment.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </main>
+<div className="comment-list">
+  {post.comments.map((comment, index) => (
+    <div key={index} className="comment">
+      <img src={profilePic} alt="User Profile" className="comment-profile-image" />
+      <div className="comment-content">
+        <span className="comment-username">{comment.username}</span>
+        <p>{comment.text}</p>
+      </div>
+    </div>
+  ))}
+</div>
+    </div>
+  ))}
+</main>
       </div>
     </div>
   );
